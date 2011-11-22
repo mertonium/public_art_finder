@@ -60,14 +60,14 @@
     "from": "api/*"
   },
   {
-    "to": "/_spatiallist/geojson/full",
     "from": "/all",
+    "to": "../../_design/geo/_spatiallist/geojson/full",
     "query": {
       "bbox": "-180,-90,180,90"
     }
   },
   {
-    "to": "/_spatiallist/kml/full",
+    "to": "../../_design/geo/_spatiallist/kml/full",
     "from": "/kml",
     "query": {
       "bbox": "-180,-90,180,90"
