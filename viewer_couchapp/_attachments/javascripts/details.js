@@ -50,7 +50,7 @@
                 
             },
             error: function(xhr, status, error) {
-                console.log('server-side failure with status code ' + status);
+                //console.log('server-side failure with status code ' + status);
             }
         });
     };

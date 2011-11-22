@@ -2,7 +2,6 @@ var Mural = {};
 
 (function(m){
   m.App = function(options) {
-    console.log(config.default_lat);
     var defaultCenter = {};
     defaultCenter.lat = config.default_lat || 37.7749295;
     defaultCenter.lng = config.default_lng || -122.4194155;
@@ -201,8 +200,7 @@ var Mural = {};
 
             },
             function(msg){
-              alert('We couldn\'t locate your position.');
-              console.log(msg);
+              alert('We couldn\'t find you, so we\'ll show you the center of '+config.city_name);
             },
             { enableHighAccuracy: true, maximumAge: 90000 });
         }
