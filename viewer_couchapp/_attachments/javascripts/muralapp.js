@@ -200,7 +200,7 @@ var Mural = {};
 
             },
             function(msg){
-              alert('We couldn\'t find you, so we\'ll show you the center of '+config.city_name);
+              alert('We couldn\'t find you, so we\'ll pretend you\'re in the center of '+config.city_name);
             },
             { enableHighAccuracy: true, maximumAge: 90000 });
         }
