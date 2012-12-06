@@ -11,8 +11,8 @@ oauth_key = ENV['FSQ_CLIENT_ID']
 oauth_secret = ENV['FSQ_CLIENT_SECRET']
 token = ENV['FSQ_TOKEN']
 
-couchview = 'http://127.0.0.1:5984/public_art_phl2/_design/phl2/_view/foursquare'
-couchresults = 'http://admin:admin@127.0.0.1:5984/public_art_phl_4sq/'
+couchview = 'http://127.0.0.1:5984/public_art_sea/_design/process/_view/foursquare'
+couchresults = 'http://admin:admin@127.0.0.1:5984/public_art_sea_4sq/'
 
 puts token
 # Create the client
