@@ -221,7 +221,7 @@ var Mural = {};
 
         // "Where da art at?" she ajaxed the couch.
         $.ajax({
-            url: '/data?bbox='+
+            url: 'data?bbox='+
                 bbox.minx+','+bbox.miny+','+bbox.maxx+','+bbox.maxy,
             crossDomain: true,
             dataType: 'jsonp',
@@ -296,7 +296,7 @@ $('#map-page').live('pagecreate',function(event){
 
 var loadConfig = function(callback) {
   $.ajax({
-      url: '/config',
+      url: 'config',
       dataType: 'jsonp',
       success: function (data, textStatus, jqXHR) {
         callback(data);
