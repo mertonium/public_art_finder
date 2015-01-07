@@ -5,6 +5,7 @@ var Mural = {};
     var defaultCenter = {};
     defaultCenter.lat = config.default_lat || 37.7749295;
     defaultCenter.lng = config.default_lng || -122.4194155;
+
     var _options = $.extend({
       mapTarget: '#map-target',
       listTarget: '#list-container',
@@ -13,6 +14,7 @@ var Mural = {};
       muralIcon: 'images/mosaic-marker.png',
       locationIcon: 'images/location-icon-pin-32.png'
     }, options),
+
     //Map Styles
     _mapTypeName = 'Map',
     _mapTypeDef = [{featureType: "road",elementType: "all",stylers: [{ saturation: -99 },{ hue: "#0000ff" }]},{featureType: "all",elementType: "labels",stylers: [{ visibility: "simplified" }]},{featureType: "road",elementType: "geometry",stylers: [{ visibility: "simplified" }]},{featureType: "road.local",elementType: "labels",stylers: [{ visibility: "on" }]},{featureType: "all",elementType: "geometry",stylers: [{ saturation: -20 }]}],
@@ -25,6 +27,7 @@ var Mural = {};
          mapTypeIds: [_mapTypeName, google.maps.MapTypeId.SATELLITE, google.maps.MapTypeId.HYBRID]
       }
     },
+
     //Map objects
     _map,
     _markers = [],
@@ -33,6 +36,7 @@ var Mural = {};
     _myLocationMarker,
     _infoWindow = new InfoBox(),
     _directionsService = new google.maps.DirectionsService(),
+
     //Mural cache
     _murals = [],
     _self = {};
@@ -126,10 +130,10 @@ var Mural = {};
         destination: new google.maps.LatLng(mural.geometry.coordinates[1], mural.geometry.coordinates[0]),
         travelMode: google.maps.DirectionsTravelMode.WALKING
       };
-      
+
       mural.distance = parseFloat(quickDist(_myLocationLatLng.lat(), _myLocationLatLng.lng(), mural.geometry.coordinates[1], mural.geometry.coordinates[0]), 10);
 //      if(!skip_echo) $('.mural-dist-'+mural.properties._id).text('You are ' + mural.distance + ' km away.');
-      
+
       // _directionsService.route(request, function(result, status) {
       //         if (status == google.maps.DirectionsStatus.OK) {
       //           if(!skip_echo) $('.mural-dist-'+mural.properties._id).text('You are ' + result.routes[0].legs[0].distance.text + ' away.');
@@ -207,14 +211,16 @@ var Mural = {};
     };
 
     _self.refresh = function(latLng) {
-        var ajaxUrl;
-        // Figure out the bounding box for the query
-        var f = 0.015;
         latLng = latLng || _lastSearchLatLng || _map.getCenter();
-        bbox = {'minx': (latLng.lng()-f),
-                'miny': (latLng.lat()-f),
-                'maxx': (latLng.lng()+f),
-                'maxy': (latLng.lat()+f)
+
+        // Figure out the bounding box for the query
+        var mapBounds = _map.getBounds();
+
+        bbox = {
+          'minx': mapBounds.getSouthWest().lng(),
+          'miny': mapBounds.getSouthWest().lat(),
+          'maxx': mapBounds.getNorthEast().lng(),
+          'maxy': mapBounds.getNorthEast().lat()
         };
 
         _lastSearchLatLng = latLng;
@@ -240,12 +246,11 @@ var Mural = {};
                 });
 
                 // Sort the murals from closest to farthest
-                function compareDist(a, b) { return  a.distance - b.distance; }
                 _murals.sort(function(a, b) { return  a.distance - b.distance; });
 
                 // Only keep the closest 50
-                _murals = _murals.slice(0,50);
-
+                //_murals = _murals.slice(0,50);
+                //console.log(_murals.map(function(x){ return x.distance; }));
                 // Update the map markers and the listing page
                 _refreshMarkers();
                 _refreshDetailList();
@@ -264,6 +269,7 @@ var Mural = {};
         google.maps.event.addListener(_map, 'dragend', function() {
             _self.refresh(_map.getCenter());
         });
+
     };
 
     var _initFindMe = function() {
