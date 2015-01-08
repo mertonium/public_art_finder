@@ -35,8 +35,8 @@ ddoc.rewrites = [
     "to": "_list/jsonp/assetid"
   },
   {
-    "to": "index.html",
-    "from": "/"
+    "from": "/",
+    "to": "index.html"
   },
   {
     "from":"details.html",
@@ -79,6 +79,11 @@ ddoc.rewrites = [
     "query": {
       "bbox": "-180,-90,180,90"
     }
+  },
+  {
+    "from" : '/*',
+    "to" : 'index.html',
+    "method" : 'GET'
   }
 ];
 
@@ -110,8 +115,8 @@ ddoc.views = {
     }
   },
   sfonly: {
-    map: function(doc) { 
-        if(doc.source =='San Francisco Arts Commission') emit(doc.accession_id, doc); 
+    map: function(doc) {
+        if(doc.source =='San Francisco Arts Commission') emit(doc.accession_id, doc);
     }
   }
 };
@@ -152,7 +157,7 @@ ddoc.lists = {
       out = JSON.stringify(row.value);
       send(out);
     }
-    
+
     if ('callback' in req.query) send(")");
   },
   sum: function(head, req) {
@@ -199,8 +204,8 @@ ddoc.shows = {
     for (; i < the_files.length; i += 1) {
       manifest += ("/" + the_files[i] + "\n");
     }
-    return { 
-      "headers": { "Content-Type": "text/cache-manifest"}, 
+    return {
+      "headers": { "Content-Type": "text/cache-manifest"},
       "body": "CACHE MANIFEST\n" + manifest +"NETWORK:\n*"
     };
   }
