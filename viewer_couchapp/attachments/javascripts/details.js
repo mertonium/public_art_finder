@@ -9,18 +9,18 @@
     function _refreshDetail(id) {
         var $container = $('div[data-url*="details.html?id='+id+'"]'),
             $detailTarget = $(_options.detailTarget, $container).html('Loading...');
-        
+
         $.ajax({
             url: '/assetid?key="'+id+'"',
             crossDomain: true,
             dataType: 'jsonp',
-            success: function (mural, textStatus, jqXHR) {            
+            success: function (mural, textStatus, jqXHR) {
                 // Structure the data a bit
                 setImages(mural);
 
                 // Set the page title
                 $(_options.detailHeader, $container).html(mural.title);
-                
+
                 var detailsHtml = imageHtml = '';
                 detailsHtml += '<div class="details_title">'+mural.title+'</div>';
 
@@ -47,14 +47,14 @@
                 detailsHtml = '<div class="details_wrapper">'+detailsHtml+'</div>';
                 $detailTarget.html(detailsHtml);
                 //$detailTarget.html($('description', $detail).text());
-                
+
             },
             error: function(xhr, status, error) {
                 //console.log('server-side failure with status code ' + status);
             }
         });
     };
-    
+
     //http://stackoverflow.com/questions/901115/get-querystring-values-in-javascript
     function _getParameterByName( name )
     {
@@ -67,22 +67,22 @@
       else
         return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
-    
+
     //http://stackoverflow.com/questions/27928/how-do-i-calculate-distance-between-two-latitude-longitude-points
     function _calcDistance(point1, point2) {
         var R = 6371; // Radius of the earth in km
         var dLat = (point2[0]-point1[0]).toRad();  // Javascript functions in radians
-        var dLon = (point2[1]-point1[1]).toRad(); 
+        var dLon = (point2[1]-point1[1]).toRad();
         var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(point1[0].toRad()) * Math.cos(point2[0].toRad()) * 
-                Math.sin(dLon/2) * Math.sin(dLon/2); 
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+                Math.cos(point1[0].toRad()) * Math.cos(point2[0].toRad()) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         var d = R * c; // Distance in km
-        
+
         return d;
     }
-    
-    
+
+
     //Init the app
     (function init() {
        //Get the id from the url
@@ -93,6 +93,6 @@
 })(Mural);
 
 //Go go go go go!!
-$('.detail-page').live('pageshow',function(event){
+$('.detail-page').on('pageshow',function(event){
     Mural.Details();
 });
