@@ -64,6 +64,10 @@ ddoc.rewrites = [
     "from": "ddoc"
   },
   {
+    "from": "artwork/:id",
+    "to"  : "../../:id"
+  },
+  {
     "to": "../../",
     "from": "api"
   },
