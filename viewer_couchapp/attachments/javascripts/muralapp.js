@@ -1,22 +1,27 @@
 var Mural = {};
 
 (function(m){
-  m.App = function(options) {
-    var defaultCenter = {};
-    defaultCenter.lat = config.default_lat || 37.7749295;
-    defaultCenter.lng = config.default_lng || -122.4194155;
+  m.App = function(configDoc) {
+    var _self = {}, _pages;
 
-    var _options = $.extend({
+    _self.config = _.defaults(configDoc, {
       mapTarget: '#map-target',
       listTarget: '#list-container',
       detailTarget: '#detail-container',
       detailHeader: '#detail-header',
       muralIcon: 'images/mosaic-marker.png',
       locationIcon: 'images/location-icon-pin-32.png'
-    }, options),
+    });
+
+    console.log(_self.config);
+
+    var defaultCenter = {
+      lat : _self.config.default_lat || 37.7749295,
+      lng : _self.config.default_lng || -122.4194155
+    };
 
     //Map Styles
-    _mapTypeName = 'Map',
+    var _mapTypeName = 'Map',
     _mapTypeDef = [{featureType: "road",elementType: "all",stylers: [{ saturation: -99 },{ hue: "#0000ff" }]},{featureType: "all",elementType: "labels",stylers: [{ visibility: "simplified" }]},{featureType: "road",elementType: "geometry",stylers: [{ visibility: "simplified" }]},{featureType: "road.local",elementType: "labels",stylers: [{ visibility: "on" }]},{featureType: "all",elementType: "geometry",stylers: [{ saturation: -20 }]}],
     _mapOptions = {
       zoom: 16,
@@ -38,8 +43,7 @@ var Mural = {};
     _directionsService = new google.maps.DirectionsService(),
 
     //Mural cache
-    _murals = [],
-    _self = {};
+    _murals = [];
 
     var _clearMarkers = function() {
         for(var i=0; i < _markers.length; i++) {
@@ -53,7 +57,7 @@ var Mural = {};
         var marker = new google.maps.Marker({
             map: _map,
             position: latLng,
-            icon: _options.muralIcon
+            icon: _self.config.muralIcon
         });
         _markers.push(marker);
 
@@ -153,7 +157,7 @@ var Mural = {};
 
 
     var _refreshDetailList = function() {
-      var $list = $(_options.listTarget).empty(),
+      var $list = $(_self.config.listTarget).empty(),
         html = '<ul id="artlisting" data-role="listview" data-inset="true" data-theme="d">';
 
       $.each(_murals, function(i, mural){
@@ -196,7 +200,7 @@ var Mural = {};
                 _myLocationMarker = new google.maps.Marker({
                     map: _map,
                     position: _myLocationLatLng,
-                    icon: _options.locationIcon
+                    icon: _self.config.locationIcon
                 });
 
                 _map.setCenter(_myLocationLatLng);
@@ -204,7 +208,7 @@ var Mural = {};
 
             },
             function(msg){
-              alert('We couldn\'t find you, so we\'ll pretend you\'re in the center of '+config.city_name);
+              alert('We couldn\'t find you, so we\'ll pretend you\'re in the center of ' + _self.config.city_name);
             },
             { enableHighAccuracy: true, maximumAge: 90000 });
         }
@@ -259,7 +263,7 @@ var Mural = {};
     };
 
     var _initMap = function() {
-        _map = new google.maps.Map($(_options.mapTarget).get(0), _mapOptions);
+        _map = new google.maps.Map($(_self.config.mapTarget).get(0), _mapOptions);
 
         var mapType = new google.maps.StyledMapType(_mapTypeDef, { name: _mapTypeName});
 
@@ -273,41 +277,136 @@ var Mural = {};
     };
 
     var _initFindMe = function() {
-      $('.find-me').live('click', function(){
+      $('.find-me').on('click', function(){
           _self.findMe();
       });
     };
 
+    var _loadPages = function() {
+      var $divs = $("[data-role='page']"),
+      pagesObject = {};
+
+      $divs.each(function(idx, el) {
+        pagesObject[el.id] = $(el);
+      });
+
+      _pages = pagesObject;
+    };
+
+    _self.showPage = function(page_id) {
+      if(!_pages) _loadPages();
+      _pages[page_id].show();
+    };
+
+    _self.clearPages = function() {
+      if(!_pages) _loadPages();
+      _.each(_.values(_pages), function($el, idx) { $el.hide(); });
+    };
+
+
+
     //Init the app
     _initMap();
     _initFindMe();
-    _self.findMe();
+    //_self.findMe();
+    _loadPages();
 
     return _self;
   };
 })(Mural);
 
-//Go go go go go!!
-var app, config;
-$('#map-page').live('pagecreate',function(event){
-    loadConfig(function(c) {
-      config = c;
-      setupGA();
-      $('#city_name').text(config.city_name);
-      $('#brought_to_you_by').text(config.brought_to_you_by);
-      app = app || Mural.App();
-      $('#about-page').show().delay(3000).fadeOut();
-    });
+var app;
+
+var murals = [
+  {
+    "_id": "4b1c22d63ac372cee8e1cda1c53644beb63d3c03",
+    "_rev": "4-389f4c7e028c6138f41ac6f7e8127e1c",
+    "id": "4b1c22d63ac372cee8e1cda1c53644beb63d3c03",
+    "title": "",
+    "artist": "zamar",
+    "description": "",
+    "discipline": "",
+    "location_description": "",
+    "full_address": "",
+    "image_urls": [
+      "https://s3.amazonaws.com/mertonium_public/zamar/2014-05-03+17.42.42.jpg"
+    ],
+    "data_source": "mertonium",
+    "doc_type": "artwork",
+    "created_at": "2014:05:03 17:42:42"
+  },
+  {
+    "_id": "1bfe3a5d6555c12ecc548e8e7add46e4762c5422",
+    "_rev": "4-92d036fa84e7a37b58612d04a64ed92c",
+    "id": "1bfe3a5d6555c12ecc548e8e7add46e4762c5422",
+    "title": "",
+    "artist": "zamar",
+    "description": "",
+    "discipline": "",
+    "location_description": "",
+    "full_address": "",
+    "image_urls": [
+      "https://s3.amazonaws.com/mertonium_public/zamar/2014-05-03+17.43.20.jpg"
+      ],
+    "data_source": "mertonium",
+    "doc_type": "artwork",
+    "created_at": "2014:05:03 17:43:20"
+  }
+];
+
+var AppRouter = Backbone.Router.extend({
+  routes: {
+    ""      : "listingPage",
+    "list"  : "listingPage",
+    "map"   : "mapPage",
+    "about" : "aboutPage"
+  },
+
+  listingPage: function() {
+    app.clearPages();
+    app.showPage('list-page');
+    React.render(
+      <MuralList url="recent.json" />,
+      document.getElementById('list-page')
+    );
+
+    //app.refresh();
+    console.log('listing page');
+  },
+
+  mapPage: function() {
+    app.clearPages();
+    app.showPage('map-page');
+    console.log('map page');
+  },
+
+  aboutPage: function() {
+    app.clearPages();
+    app.showPage('about-page');
+    console.log('about page');
+  }
+
 });
 
+function loadApp(callback) {
+    loadConfig(function(config) {
+      setupGA(config.google_analytics);
+      $('#city_name').text(config.city_name);
+      $('#brought_to_you_by').text(config.brought_to_you_by);
+      app = app || Mural.App(config);
+
+      Mural.Router = new AppRouter();
+      Backbone.history.start({
+        pushState: true,
+        root: '/zamar/_design/viewer/_rewrite/'
+      });
+
+      if(callback) callback();
+    });
+}
+
 var loadConfig = function(callback) {
-  $.ajax({
-      url: 'config',
-      dataType: 'jsonp',
-      success: function (data, textStatus, jqXHR) {
-        callback(data);
-      }
-  });
+  $.getJSON('config', callback);
 };
 
 // Setup the images for a given piece of art
@@ -327,7 +426,7 @@ var setImages = function (mural) {
           mural.thumb = thumbbits.join('.');
         }
     } else if(mural._attachments) {      // Using attachments
-        imgArray = getKeys(mural._attachments);
+        imgArray = _.keys(mural._attachments);
         for(i=0; i < imgArray.length; i+=1) {
             mural.imgs.push('/dbimgs/'+mural._id+'/'+imgArray[i]);
         }
@@ -338,13 +437,27 @@ var setImages = function (mural) {
     return mural;
 };
 
-// Helper function that returns all the keys for a given object
-var getKeys = function(obj){
-    var keys = [];
-    for(var key in obj){
-        if (obj.hasOwnProperty(key)) {
-            keys.push(key);
-        }
-    }
-    return keys;
-};
+//Go go go go go!!
+$(function() {
+
+  // This function goes through every <a> tag on the page, and for each relative
+  // link it finds, it overrides the default link behavior and triggers the
+  // backbone route that matches the given url.
+  var takeoverLinks = function() {
+    $('a').each(function(idx, el) {
+      var $link = $(el),
+          href = $link.attr('href');
+
+      if(href && !href.match(/^http|^javascript/)) {
+        $link.on('click', function(ev) {
+          ev.preventDefault();
+          Mural.Router.navigate(href, { trigger: true });
+        });
+      }
+    });
+  };
+
+  loadApp(takeoverLinks);
+});
+
+

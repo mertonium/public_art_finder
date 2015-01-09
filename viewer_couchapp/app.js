@@ -51,6 +51,11 @@ ddoc.rewrites = [
     "to": "../../_design/geo/_spatial/_list/geojson/full"
   },
   {
+    "from": "/recent.json",
+    "to": "_view/recent-items",
+    "query": { "descending" : "true" }
+  },
+  {
     "from": "/config",
     "to":"_list/jsonp/config"
   },
