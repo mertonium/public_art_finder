@@ -127,6 +127,13 @@ ddoc.views = {
     map: function(doc) {
         if(doc.source =='San Francisco Arts Commission') emit(doc.accession_id, doc);
     }
+  },
+  byCollection: {
+    map: function(doc) {
+      if(doc.doc_type) {
+        emit(doc.doc_type, doc);
+      }
+    }
   }
 };
 
