@@ -90,9 +90,9 @@
        _refreshDetail(_id);
     })();
   };
-})(Mural);
+})(MuralApp);
 
 //Go go go go go!!
 $('.detail-page').on('pageshow',function(event){
-    Mural.Details();
+    MuralApp.Details();
 });
