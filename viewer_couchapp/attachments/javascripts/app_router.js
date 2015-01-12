@@ -17,7 +17,8 @@ var AppRouter = Backbone.Router.extend({
       app.renderListPage();
     } else {
       app.RecentArtworks.fetch({
-        limit: 5,
+        limit: 10,
+        descending: true,
         reset: true,
         success: app.renderListPage
       });
