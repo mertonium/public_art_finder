@@ -1,4 +1,4 @@
-var Mural = {};
+var MuralApp = {};
 
 (function(m){
   m.App = function(configDoc) {
@@ -303,7 +303,15 @@ var Mural = {};
       _.each(_.values(_pages), function($el, idx) { $el.hide(); });
     };
 
+    _self.RecentArtworks = new Artworks();
 
+    _self.renderListPage = function() {
+      app.showPage('list-page');
+      React.render(
+        <MuralList collection={_self.RecentArtworks} />,
+        document.getElementById('list-page')
+      );
+    };
 
     //Init the app
     _initMap();
@@ -313,89 +321,24 @@ var Mural = {};
 
     return _self;
   };
-})(Mural);
+
+  m.Router = new AppRouter();
+
+})(MuralApp);
 
 var app;
 
-var murals = [
-  {
-    "_id": "4b1c22d63ac372cee8e1cda1c53644beb63d3c03",
-    "_rev": "4-389f4c7e028c6138f41ac6f7e8127e1c",
-    "id": "4b1c22d63ac372cee8e1cda1c53644beb63d3c03",
-    "title": "",
-    "artist": "zamar",
-    "description": "",
-    "discipline": "",
-    "location_description": "",
-    "full_address": "",
-    "image_urls": [
-      "https://s3.amazonaws.com/mertonium_public/zamar/2014-05-03+17.42.42.jpg"
-    ],
-    "data_source": "mertonium",
-    "doc_type": "artwork",
-    "created_at": "2014:05:03 17:42:42"
-  },
-  {
-    "_id": "1bfe3a5d6555c12ecc548e8e7add46e4762c5422",
-    "_rev": "4-92d036fa84e7a37b58612d04a64ed92c",
-    "id": "1bfe3a5d6555c12ecc548e8e7add46e4762c5422",
-    "title": "",
-    "artist": "zamar",
-    "description": "",
-    "discipline": "",
-    "location_description": "",
-    "full_address": "",
-    "image_urls": [
-      "https://s3.amazonaws.com/mertonium_public/zamar/2014-05-03+17.43.20.jpg"
-      ],
-    "data_source": "mertonium",
-    "doc_type": "artwork",
-    "created_at": "2014:05:03 17:43:20"
-  }
-];
-
-var AppRouter = Backbone.Router.extend({
-  routes: {
-    ""      : "listingPage",
-    "list"  : "listingPage",
-    "map"   : "mapPage",
-    "about" : "aboutPage"
-  },
-
-  listingPage: function() {
-    app.clearPages();
-    app.showPage('list-page');
-    React.render(
-      <MuralList url="recent.json" />,
-      document.getElementById('list-page')
-    );
-
-    //app.refresh();
-    console.log('listing page');
-  },
-
-  mapPage: function() {
-    app.clearPages();
-    app.showPage('map-page');
-    console.log('map page');
-  },
-
-  aboutPage: function() {
-    app.clearPages();
-    app.showPage('about-page');
-    console.log('about page');
-  }
-
-});
-
 function loadApp(callback) {
     loadConfig(function(config) {
+      var backbone_couch_config = _.extend(Backbone.couch_connector.config, config.couch_connector_config);
+      Backbone.couch_connector.config = backbone_couch_config;
+
       setupGA(config.google_analytics);
       $('#city_name').text(config.city_name);
       $('#brought_to_you_by').text(config.brought_to_you_by);
-      app = app || Mural.App(config);
 
-      Mural.Router = new AppRouter();
+      app = app || MuralApp.App(config);
+
       Backbone.history.start({
         pushState: true,
         root: '/zamar/_design/viewer/_rewrite/'
@@ -451,7 +394,7 @@ $(function() {
       if(href && !href.match(/^http|^javascript/)) {
         $link.on('click', function(ev) {
           ev.preventDefault();
-          Mural.Router.navigate(href, { trigger: true });
+          MuralApp.Router.navigate(href, { trigger: true });
         });
       }
     });
