@@ -30,12 +30,23 @@ var ModelUpdateMixin = {
 
 };
 
+var MoreMurals = React.createClass({
+  handleClick: function() {
+    this.props.collection.more(10);
+  },
+  render: function() {
+    return (
+      <button onClick={this.handleClick}>more</button>
+    );
+  }
+});
+
 var MuralItem = React.createClass({
 
   render: function() {
     return (
       <div className='muralItem'>
-        <img src={this.props.url} />
+        <img src={this.props.url} width="320" />
         <div className='muralMeta'>
           <h3>{this.props.children}</h3>
           <em>Photo taken on {this.props.created_at}</em>
@@ -59,6 +70,7 @@ var MuralList = React.createClass({
     return (
       <div className="muralList">
         {muralNodes}
+        <MoreMurals collection={this.props.collection} />
       </div>
     );
   }
