@@ -7,6 +7,9 @@ var Artwork = Backbone.Model.extend({
 
 var Artworks = Backbone.Collection.extend({
   url: 'artwork',
+  db: {
+    view: 'recent-items'
+  },
   model: Artwork,
   comparator: function(a, b) {
     if(b.get('created_at') < a.get('created_at')) {
@@ -19,12 +22,15 @@ var Artworks = Backbone.Collection.extend({
   },
 
   more: function(how_many) {
-    var startkey = this.last().get('_id'),
+    var startkey = this.last().get('created_at'),
+        startkey_docid = this.last().get('_id'),
         limit = how_many || 5;
 
     this.fetch({
       limit: limit,
-      startkey_docid: startkey,
+      startkey: startkey,
+      startkey_docid: startkey_docid,
+      descending: true,
       remove: false
     });
   }
