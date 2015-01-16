@@ -2,6 +2,10 @@ var Artwork = Backbone.Model.extend({
   idAttribute: "_id",
   mainImage: function() {
     return this.get('image_urls')[0];
+  },
+
+  created_at_iso: function() {
+    return this.get('created_at').replace(/(\d{4}):(\d{2}):(\d{2})/, "$1-$2-$3")
   }
 });
 

@@ -50,7 +50,7 @@ var MuralItem = React.createClass({
           <div className='muralMeta mural-item'>
             <img src={this.props.url} width="100%" />
             <p>
-              Photo taken on {this.props.created_at}
+              Photo taken {moment(this.props.created_at).fromNow()}
             </p>
           </div>
         </div>
@@ -65,9 +65,7 @@ var MuralList = React.createClass({
     console.log(this.props);
     var muralNodes = this.props.collection.map(function(mural) {
       return (
-        <MuralItem key={mural.cid} url={mural.mainImage()} created_at={mural.get('created_at')}>
-          {mural.get('artist')}
-        </MuralItem>
+        <MuralItem key={mural.cid} url={mural.mainImage()} created_at={mural.created_at_iso()} />
       );
     });
     return (
