@@ -2,6 +2,10 @@ body {
   padding-top: 70px;
 }
 
+.mural-item {
+  margin-bottom: 25px;
+}
+
 #map-target {
   position:absolute;
   top:42px;

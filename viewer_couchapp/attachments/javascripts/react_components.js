@@ -45,11 +45,14 @@ var MuralItem = React.createClass({
 
   render: function() {
     return (
-      <div className='muralItem'>
-        <img src={this.props.url} width="320" />
-        <div className='muralMeta'>
-          <h3>{this.props.children}</h3>
-          <em>Photo taken on {this.props.created_at}</em>
+      <div className='row'>
+        <div className='col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3'>
+          <div className='muralMeta mural-item'>
+            <img src={this.props.url} width="100%" />
+            <p>
+              Photo taken on {this.props.created_at}
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -68,7 +71,7 @@ var MuralList = React.createClass({
       );
     });
     return (
-      <div className="muralList">
+      <div className="muralList container-fluid">
         {muralNodes}
         <MoreMurals collection={this.props.collection} />
       </div>
