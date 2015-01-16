@@ -308,6 +308,10 @@ var MuralApp = {};
     _self.renderListPage = function() {
       app.showPage('list-page');
       React.render(
+        <AppHeader />,
+        document.getElementById('app-header')
+      );
+      React.render(
         <MuralList collection={_self.RecentArtworks} />,
         document.getElementById('list-page')
       );

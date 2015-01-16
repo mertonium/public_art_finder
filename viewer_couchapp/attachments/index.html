@@ -2,12 +2,13 @@
 <html>
     <head>
         <title>The Public Art App</title>
-        <link rel="stylesheet" href="stylesheets/jquery.mobile-1.0a4.1.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="stylesheets/muralapp.css" />
 
         <script src="http://fb.me/react-0.12.2.js"></script>
         <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
         <script type="text/javascript" src="javascripts/jquery-2.1.3.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="javascripts/underscore-min.js" charset="utf-8"></script>
         <script type="text/javascript" src="javascripts/backbone-min.js" charset="utf-8"></script>
         <script type="text/javascript" src="javascripts/jquery.couch.js" charset="utf-8"></script>
@@ -23,6 +24,7 @@
     </head>
 <body>
 
+<div id="app-header"></div>
 <!-- Map -->
 <div data-role="page" id="map-page">
     <div data-role="header" data-position="inline" data-backbtn="false">
@@ -38,13 +40,7 @@
 
 <!-- List -->
 <div data-role="page" id="list-page">
-    <div data-role="header" data-position="inline" data-backbtn="false">
-        <a href="map" data-transition="flip">Map</a>
-        <h1>PUBLIC ART FINDER</h1>
-        <a href="javascript:void(0);" class="find-me">Find Me</a>
-    </div>
-
-    <div data-role="content" id="list-container"></div>
+    <div data-role="content" id="list-container" class="center-block"></div>
 </div>
 
 <!-- about page -->
