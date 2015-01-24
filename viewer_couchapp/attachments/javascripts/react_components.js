@@ -62,7 +62,6 @@ var MuralItem = React.createClass({
 var MuralList = React.createClass({
   mixins: [ ModelUpdateMixin ],
   render: function() {
-    console.log(this.props);
     var muralNodes = this.props.collection.map(function(mural) {
       return (
         <MuralItem key={mural.cid} url={mural.mainImage()} created_at={mural.created_at_iso()} />
