@@ -13,9 +13,7 @@ var MuralApp = {};
       locationIcon: 'images/location-icon-pin-32.png'
     });
 
-    console.log(_self.config);
-
-    var defaultCenter = {
+    _self.defaultCenter = {
       lat : _self.config.default_lat || 37.7749295,
       lng : _self.config.default_lng || -122.4194155
     };
@@ -26,7 +24,7 @@ var MuralApp = {};
     _mapOptions = {
       zoom: 16,
       // PHL 39.95185, -75.16382  SF 37.7749295, -122.4194155
-      center: new google.maps.LatLng(defaultCenter.lat, defaultCenter.lng),
+      center: new google.maps.LatLng(_self.defaultCenter.lat, _self.defaultCenter.lng),
       mapTypeId: _mapTypeName,
       mapTypeControlOptions: {
          mapTypeIds: [_mapTypeName, google.maps.MapTypeId.SATELLITE, google.maps.MapTypeId.HYBRID]
@@ -41,6 +39,15 @@ var MuralApp = {};
     _myLocationMarker,
     _infoWindow = new InfoBox(),
     _directionsService = new google.maps.DirectionsService(),
+    _iconStyle = new ol.style.Style({
+      image: new ol.style.Icon({
+        anchor: [0.5, 0],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        opacity: 1.0,
+        src: _self.config.muralIcon
+      })
+    }),
 
     //Mural cache
     _murals = [];
@@ -263,6 +270,36 @@ var MuralApp = {};
     };
 
     var _initMap = function() {
+        // I hung geojson_source off of _self so I can access it in the console.
+        // It probably shouldn't stay this way. #TODO
+        _self.geojson_source = new ol.source.GeoJSON();
+
+        var geojson_layer = new ol.layer.Vector({
+          source: _self.geojson_source,
+          style: _iconStyle
+        });
+
+        var tileLayer = new ol.layer.Tile({
+          source: new ol.source.Stamen({
+            layer: 'toner-lite',
+            attributions: [
+              new ol.Attribution({
+                html: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
+              })
+            ]
+          })
+        });
+
+        _map = new ol.Map({
+          target: _self.config.mapTarget.replace('#',''),
+          layers: [tileLayer, geojson_layer],
+          view: new ol.View({
+            center: ol.proj.transform([_self.defaultCenter.lng, _self.defaultCenter.lat], 'EPSG:4326', 'EPSG:3857'),
+            zoom: 13
+          })
+        });
+
+        /*
         _map = new google.maps.Map($(_self.config.mapTarget).get(0), _mapOptions);
 
         var mapType = new google.maps.StyledMapType(_mapTypeDef, { name: _mapTypeName});
@@ -273,7 +310,7 @@ var MuralApp = {};
         google.maps.event.addListener(_map, 'dragend', function() {
             _self.refresh(_map.getCenter());
         });
-
+        */
     };
 
     var _initFindMe = function() {
@@ -303,7 +340,21 @@ var MuralApp = {};
       _.each(_.values(_pages), function($el, idx) { $el.hide(); });
     };
 
+   var updateGeoJsonLayer = function(upToDateCollection) {
+      var olFeatures = _.map(upToDateCollection.as_features(), function(el) {
+        var geometry = new ol.geom.Point(el.geometry.coordinates).transform('EPSG:4326','EPSG:3857');
+
+        return new ol.Feature({
+          geometry: geometry
+        });
+      });
+
+      _self.geojson_source.clear({ fast: true });
+      _self.geojson_source.addFeatures(olFeatures);
+    };
+
     _self.RecentArtworks = new Artworks();
+    _self.RecentArtworks.on('sync', updateGeoJsonLayer);
 
     _self.renderListPage = function() {
       app.showPage('list-page');
@@ -318,6 +369,8 @@ var MuralApp = {};
     _initFindMe();
     //_self.findMe();
     _loadPages();
+
+    _self.Map = _map;
 
     return _self;
   };
