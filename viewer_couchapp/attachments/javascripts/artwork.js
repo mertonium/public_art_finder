@@ -6,7 +6,15 @@ var Artwork = Backbone.Model.extend({
 
   created_at_iso: function() {
     return this.get('created_at').replace(/(\d{4}):(\d{2}):(\d{2})/, "$1-$2-$3")
+  },
+
+  as_geojson: function() {
+    return {
+      type: 'Feature',
+      geometry: this.get('geometry')
+    };
   }
+
 });
 
 var Artworks = Backbone.Collection.extend({
@@ -36,6 +44,12 @@ var Artworks = Backbone.Collection.extend({
       startkey_docid: startkey_docid,
       descending: true,
       remove: false
+    });
+  },
+
+  as_features: function() {
+    return _.map(this.models, function(el) {
+      return el.as_geojson();
     });
   }
 });
